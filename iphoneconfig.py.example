@@ -1,0 +1,7 @@
+emailgatewayID='YOUR EMAIL'
+emailpwd='YOUR PWD'
+systememail='andy@app4dmain.com'
+receiveemail='test@email.com'
+model_data = 'iphone_model'
+store_data = 'store_map'
+log_data = 'iphone.log'

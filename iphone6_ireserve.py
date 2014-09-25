@@ -71,7 +71,7 @@ def run():
 		for store in storejson:
 			for model in iphonejson[store]:
 				if iphonejson[store][model] == True:
-					haveStock += "\n" + storejson[store] + " " + modeljson[model]
+					haveStock += "\n" + str(iphonejson["updated"] + ": " + storejson[store] + " " + modeljson[model]
 		print sendGmailSmtp(iphoneconfig.emailgatewayID,iphoneconfig.emailpwd,iphoneconfig.receiveemail,'IPhone iReserve avaliable', 'Go https://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone\nhttps://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone/availability\nhttps://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone?execution=e1s2\n' + haveStock)
 
 count = 0

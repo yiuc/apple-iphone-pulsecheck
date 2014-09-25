@@ -51,8 +51,8 @@ def checkStock(iphonejson):
 #
 # read data
 #
-model_data = iphoneconfig.model_data
-store_data = iphoneconfig.store_data
+model_data = open(iphoneconfig.model_data)
+store_data = open(iphoneconfig.store_data)
 # model_data = open('iphone_model')
 # store_data = open('store_map')
 modeljson = json.load(model_data)

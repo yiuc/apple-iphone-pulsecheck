@@ -23,16 +23,13 @@ def sendGmailSmtp(strGmailUser,strGmailPassword,strRecipient,strSubject,strConte
     mailServer.login(strGmailUser, strGmailPassword)
     mailServer.sendmail(strGmailUser, strRecipient, strMessage.as_string())
     mailServer.close()
-    return 'send successed'
+    return 'send ' + strSubject
 
 #
 # read data
 #
 model_data = open(iphoneconfig.model_data)
 store_data = open(iphoneconfig.store_data)
-# data = open('json_sample')
-# model_data = open('iphone_model')
-# store_data = open('store_map')
 modeljson = json.load(model_data)
 storejson = json.load(store_data)
 
@@ -51,12 +48,15 @@ def run():
 	# Was hoping text would contain the actual json crap from the URL, but seems not...
 	#
 	html=response.read()
+	#sampledata = open('/home/ubuntu/apple-iphone-pulsecheck/sample')
+	#iphonejson = json.load(sampledata)
 	iphonejson = json.loads(html)
 	#print iphonejson
 	#
 	# checking
 	#
 	if html.find("true") == -1:
+	#if html.find("true") != -1:
 		if html.find("false") > -1:
 			print datetime.datetime.now().isoformat() + ": No iReserve - all items are false: " + str(iphonejson["updated"])
 		else:
@@ -68,11 +68,17 @@ def run():
 		# Catch Data
 		#
 		haveStock = ""
+		haveplus = ""
 		for store in storejson:
 			for model in iphonejson[store]:
 				if iphonejson[store][model] == True:
 					haveStock += "\n" + str(iphonejson["updated"]) + ": " + storejson[store] + " " + modeljson[model]
-		print sendGmailSmtp(iphoneconfig.emailgatewayID,iphoneconfig.emailpwd,iphoneconfig.receiveemail,'IPhone iReserve avaliable', 'Go https://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone\nhttps://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone/availability\nhttps://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone?execution=e1s2\n' + haveStock)
+					if modeljson[model].find("5.5")>-1:
+						haveplus += "\n" + str(iphonejson["updated"]) + ": " + storejson[store] + " " + modeljson[model]
+		if len(haveStock) > 0:
+			print sendGmailSmtp(iphoneconfig.emailgatewayID,iphoneconfig.emailpwd,iphoneconfig.receivemail,'IPhone iReserve avaliable', 'Go https://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone\nhttps://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone/availability\nhttps://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone?execution=e1s2\n' + haveStock)
+		if len(haveplus) > 0:
+			print sendGmailSmtp(iphoneconfig.emailgatewayID,iphoneconfig.emailpwd,iphoneconfig.iphoneplusmail,'IPhone 6+ iReserve avaliable', 'Go https://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone\nhttps://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone/availability\nhttps://reserve-hk.apple.com/HK/zh_HK/reserve/iPhone?execution=e1s2\n' + haveplus)
 
 count = 0
 times = 4
